@@ -44,10 +44,5 @@ impl Source for Collatz {
     fn current_frame_len(&self) -> Option<usize> { None }
     fn total_duration(&self) -> Option<Duration> { None }
 }
-// impl Write for Collatz {
-//     fn write(&mut self, buf: &[u8]) -> Result<usize> {
-        
-//         Ok(44100)
-//     }
-// }
+
 
