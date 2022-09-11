@@ -1,36 +1,21 @@
 use std::thread;
 use std::time::Duration;
+use std::fs::File;
+use std::path::Path;
 use rodio::{OutputStream, Source};
-use rand;
 
+mod collatz;
+use collatz::Collatz;
 
-struct MySource {
-    sample_rate: u32,
-}
-impl MySource {
-    fn new(sample_rate: u32) -> MySource {
-        MySource { 
-            sample_rate,
-        }
-    }
-}
-impl Source for MySource {
-    fn channels(&self) -> u16 { 1 }
-    fn sample_rate(&self) -> u32 { self.sample_rate }
-    fn current_frame_len(&self) -> Option<usize> { None }
-    fn total_duration(&self) -> Option<Duration> { None }
-}
-impl Iterator for MySource {
-    type Item = f32;
-    fn next(&mut self) -> Option<f32> {
-        Some( rand::random())
-    }
-}
-
+// TO DO
+// wav: sauvegarde vers wav file
+// use clap: parse cli arguments pitch, duration, start value, explo_step etc.
 
 fn main() {
-    let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
-    let mySource = MySource::new(44100);
-    let _result = stream_handle.play_raw(mySource.convert_samples());
-    thread::sleep(Duration::from_millis(1500));
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let mut collatz = Collatz::new(55555555555555555);
+    collatz.exploration_step = 1;
+    let _result = stream_handle.play_raw(collatz.convert_samples().amplify(0.1).speed(0.5));
+    // .filter(1000)
+    thread::sleep(Duration::from_millis(60000));
 }
