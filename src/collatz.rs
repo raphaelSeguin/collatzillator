@@ -5,19 +5,31 @@ use rodio::Source;
 // TO DO
 // set_pitch
 // interpolation entre les points (linéaire, quad..) pour les pitches plus petit que 0
+// autres modes de conversion en f32 que modulo u16 ?
+// autres modes d'exploration: 
+//      - maximum + 1
+//      - count
 // autres suites/séquences, voir OEIS (Recaman)
 
 pub struct Collatz {
     init_value: u128,
     value: u128,
-    pub exploration_step: u128
+    pub exploration_step: u128,
+    pub repeats: u128,
+    maximum: u128,
+    count_samples: u128,
+    count_repeats: u128,
 }
 impl Collatz {
     pub fn new(init_value: u128) -> Collatz {
         Collatz { 
             init_value,
             value: init_value,
-            exploration_step: 1
+            exploration_step: 1,
+            maximum: 0,
+            repeats: 1,
+            count_samples: 0,
+            count_repeats: 0
         }
     }
 }
@@ -28,14 +40,20 @@ impl Iterator for Collatz {
             self.value / 2 
         } else {
             if self.value == 1 {
-                self.init_value += self.exploration_step;
+                self.count_repeats += 1;
+                if self.count_repeats == self.repeats {
+                    self.count_repeats = 0;
+                    self.init_value += self.exploration_step;
+                }
                 self.init_value
             } else {
                 3 * self.value + 1 
             }
         };
+        self.maximum = if self.value > self.maximum { self.value } else { self.maximum };
+        self.count_samples += 1;
         Some((self.value % u16::MAX as u128) as f32 / u16::MAX as f32)
-        // Some(self.value as f32 / u32::MAX as f32)
+        //Some(self.value as f32 / u32::MAX as f32)
     }
 }
 impl Source for Collatz {
