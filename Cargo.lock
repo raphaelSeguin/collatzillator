@@ -3,6 +3,16 @@
 version = 3
 
 [[package]]
+name = "Collatzillator"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "rand",
+ "rodio",
+ "wav",
+]
+
+[[package]]
 name = "alsa"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -484,16 +494,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e21c73734c69dc95696c9ed8926a2b393171d98b3f5f5935686a26a487ab9b90"
 dependencies = [
  "cc",
-]
-
-[[package]]
-name = "mywavetable"
-version = "0.1.0"
-dependencies = [
- "clap",
- "rand",
- "rodio",
- "wav",
 ]
 
 [[package]]
