@@ -17,8 +17,11 @@ pub struct Collatz {
     pub exploration_step: u128,
     pub repeats: u128,
     maximum: u128,
-    count_samples: u128,
+    count_samples: u128, // pour contraindre une longueur de table ?
     count_repeats: u128,
+    next_value: u128,
+    cursor: f32,
+    increment: f32,
 }
 impl Collatz {
     pub fn new(init_value: u128) -> Collatz {
@@ -29,13 +32,16 @@ impl Collatz {
             maximum: 0,
             repeats: 1,
             count_samples: 0,
-            count_repeats: 0
+            count_repeats: 0,
+            next_value: 0,
+            cursor: 0.0,
+            increment: 1.0,
         }
     }
-}
-impl Iterator for Collatz {
-    type Item = f32;
-    fn next(&mut self) -> Option<Self::Item> {
+    pub fn set_pitch(&mut self, pitch: f32) {
+        self.increment = pitch;
+    }
+    fn next_value(&mut self) {
         self.value = if self.value % 2 == 0 { 
             self.value / 2 
         } else {
@@ -52,8 +58,21 @@ impl Iterator for Collatz {
         };
         self.maximum = if self.value > self.maximum { self.value } else { self.maximum };
         self.count_samples += 1;
-        Some((self.value % u16::MAX as u128) as f32 / u16::MAX as f32)
-        //Some(self.value as f32 / u32::MAX as f32)
+    }
+    pub fn interpolate(&mut self) -> f32 {
+        self.cursor += self.increment;
+        if self.cursor >= 1.0 {
+            self.next_value();
+            self.cursor %= 1.0;
+        }
+
+        (self.value % u16::MAX as u128) as f32 / u16::MAX as f32
+    }
+}
+impl Iterator for Collatz {
+    type Item = f32;
+    fn next(&mut self) -> Option<Self::Item> {
+        Some(self.interpolate())
     }
 }
 impl Source for Collatz {

@@ -42,7 +42,7 @@ fn main() {
     let mut collatz = Collatz::new(args.init);
     collatz.exploration_step = args.step;
     collatz.repeats = args.repeats;
-
+    collatz.set_pitch(args.pitch);
     if args.output.len() > 0 {
 
         // let mut out_file = File::create(Path::new("{output_file}.wav"));
@@ -57,8 +57,10 @@ fn main() {
         //     Err(_) => println!("Erreur de génération de fichier")
         // };
     } else {
-        let _result = stream_handle.play_raw(collatz.convert_samples().amplify(0.1).speed(args.pitch));
-        // .reverb()
+        let source = collatz.buffered().convert_samples().amplify(1.0);
+        let _result = stream_handle.play_raw(source);
+        // .speed(args.pitch)
+        // .reverb(Duration::from_millis(100), 0.7)
         // .filter(1000)
         thread::sleep(Duration::from_millis(args.duration));
     }
