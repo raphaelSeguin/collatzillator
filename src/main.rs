@@ -2,6 +2,7 @@ use std::thread;
 use std::time::Duration;
 use std::fs::File;
 use std::path::Path;
+use std::io::Error;
 use rodio::{OutputStream, Source};
 use clap::{Command, Parser};
 use wav;
@@ -34,7 +35,7 @@ struct Args {
    pitch: f32,
 }
 
-fn main() {
+fn main() -> Result<(), Error> {
     let args = Args::parse();
 
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
@@ -44,8 +45,22 @@ fn main() {
     collatz.repeats = args.repeats;
     collatz.set_pitch(args.pitch);
     if args.output.len() > 0 {
-
-        // let mut out_file = File::create(Path::new("{output_file}.wav"));
+        let mut audio: Vec<f32> = Vec::new();
+        for n in 0..(args.duration as f32* 44.1) as usize {
+            audio.push(collatz.next().unwrap())
+        }
+        let header = wav::Header::new(
+            wav::header::WAV_FORMAT_PCM,
+            1,
+            44_100,
+            32
+        );
+        let data = wav::BitDepth::ThirtyTwoFloat(audio);
+        
+        let file_name = String::from(args.output) + ".wav";
+        let mut out_file = File::create(Path::new(&file_name))?;
+        wav::write(header, &data, &mut out_file)?;
+        // let mut out_file = File::create(Path::new("{output}.wav"));
         // // audio format, channel count, sampling rate, bit depth
         // let header = wav::Header::new(wav::header::WAV_FORMAT_PCM, 1, 44_100, 16);
 
@@ -64,4 +79,5 @@ fn main() {
         // .filter(1000)
         thread::sleep(Duration::from_millis(args.duration));
     }
+    Ok(())
 }
