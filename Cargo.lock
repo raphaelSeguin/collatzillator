@@ -3,16 +3,6 @@
 version = 3
 
 [[package]]
-name = "Collatzillator"
-version = "0.1.0"
-dependencies = [
- "clap",
- "rand",
- "rodio",
- "wav",
-]
-
-[[package]]
 name = "alsa"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -179,6 +169,16 @@ name = "claxon"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4bfbf56724aa9eca8afa4fcfadeb479e722935bb2a0900c2d37e0cc477af0688"
+
+[[package]]
+name = "collatzillator"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "rand",
+ "rodio",
+ "wav",
+]
 
 [[package]]
 name = "combine"

@@ -1,5 +1,5 @@
 [package]
-name = "Collatzillator"
+name = "collatzillator"
 version = "0.1.0"
 edition = "2021"
 

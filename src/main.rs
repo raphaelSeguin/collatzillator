@@ -11,8 +11,6 @@ mod collatz;
 use collatz::Collatz;
 
 // TO DO
-// wav: sauvegarde vers wav file
-// use clap: parse cli arguments pitch, duration, start value, explo_step etc.
 
 // Utils
 // mtof ftom
@@ -33,6 +31,8 @@ struct Args {
    output: String,
    #[clap(short, long, value_parser, default_value_t = 1.0)]
    pitch: f32,
+   #[clap(short, long, value_parser, default_value_t = false)]
+   altern_phase: bool,
 }
 
 fn main() -> Result<(), Error> {
@@ -43,6 +43,7 @@ fn main() -> Result<(), Error> {
     let mut collatz = Collatz::new(args.init);
     collatz.exploration_step = args.step;
     collatz.repeats = args.repeats;
+    collatz.altern_phase = args.altern_phase;
     collatz.set_pitch(args.pitch);
     if args.output.len() > 0 {
         let mut audio: Vec<f32> = Vec::new();
@@ -60,17 +61,6 @@ fn main() -> Result<(), Error> {
         let file_name = String::from(args.output) + ".wav";
         let mut out_file = File::create(Path::new(&file_name))?;
         wav::write(header, &data, &mut out_file)?;
-        // let mut out_file = File::create(Path::new("{output}.wav"));
-        // // audio format, channel count, sampling rate, bit depth
-        // let header = wav::Header::new(wav::header::WAV_FORMAT_PCM, 1, 44_100, 16);
-
-        // // on  a un iterator en f32 et on veut un Vec<i16>
-        // let data = wav::bit_depth::BitDepth::ThirtyTwoFloat(Vec::<f32>::from_iter(collatz.take(44100)));
-        // let file_result = wav::write(header, &data, &mut out_file);
-        // match file_result {
-        //     Ok(()) => println!("OK"),
-        //     Err(_) => println!("Erreur de génération de fichier")
-        // };
     } else {
         let source = collatz.buffered().convert_samples().amplify(1.0);
         let _result = stream_handle.play_raw(source);

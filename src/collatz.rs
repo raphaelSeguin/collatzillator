@@ -22,6 +22,7 @@ pub struct Collatz {
     next_value: u128,
     cursor: f32,
     increment: f32,
+    pub altern_phase: bool,
 }
 impl Collatz {
     pub fn new(init_value: u128) -> Collatz {
@@ -36,6 +37,7 @@ impl Collatz {
             next_value: 0,
             cursor: 0.0,
             increment: 1.0,
+            altern_phase: true,
         }
     }
     pub fn set_pitch(&mut self, pitch: f32) {
@@ -65,8 +67,11 @@ impl Collatz {
             self.next_value();
             self.cursor %= 1.0;
         }
-
-        (self.value % u16::MAX as u128) as f32 / u16::MAX as f32
+        if self.altern_phase {
+            ((self.value % u16::MAX as u128) as f32 / u16::MAX as f32) * (((self.count_repeats % 2) * 2) as f32 - 1.0)
+        } else {
+            (self.value % u16::MAX as u128) as f32 / u16::MAX as f32
+        }
     }
 }
 impl Iterator for Collatz {
