@@ -16,9 +16,9 @@ OPTIONS:
     -V, --version                Print version information
 ```
 
-## My favorite presets (WARNING! could be loud)
-cargo run -- -d 80000 -i 1 -s 1000 -r 8 -p 0.4
-cargo run -- -d 80000 -i 1 -s 1000 -r 50 -p 0.5
-cargo run -- -d 80000 -i 1 -s 10000 -r 5 -p 0.2
-cargo run -- -d 80000 -i 100000 -s 1 -r 20 -p 0.25
-cargo run -- -d 80000 -i 1 -s 1 -r 1 -p 0.25
+## My favorite presets
+- -i 1 -s 1000 -r 8 -p 0.4
+- -i 1 -s 1000 -r 50 -p 0.5
+- -i 1 -s 10000 -r 5 -p 0.2
+- -i 100000 -s 1 -r 20 -p 0.25
+- -i 1 -s 1 -r 1 -p 0.25

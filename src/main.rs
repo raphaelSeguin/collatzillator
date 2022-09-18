@@ -4,7 +4,7 @@ use std::fs::File;
 use std::path::Path;
 use std::io::Error;
 use rodio::{OutputStream, Source};
-use clap::{Command, Parser};
+use clap::{Parser};
 use wav;
 
 mod collatz;
@@ -14,6 +14,7 @@ use collatz::Collatz;
 
 // Utils
 // mtof ftom
+// params in audio file output
 // atodb dbtoa
 
 #[derive(Parser, Debug)]
@@ -47,7 +48,7 @@ fn main() -> Result<(), Error> {
     collatz.set_pitch(args.pitch);
     if args.output.len() > 0 {
         let mut audio: Vec<f32> = Vec::new();
-        for n in 0..(args.duration as f32* 44.1) as usize {
+        for _n in 0..(args.duration as f32* 44.1) as usize {
             audio.push(collatz.next().unwrap())
         }
         let header = wav::Header::new(

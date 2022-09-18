@@ -1,5 +1,4 @@
 use std::time::Duration;
-use std::io::Write;
 use rodio::Source;
 
 // TO DO
@@ -10,6 +9,7 @@ use rodio::Source;
 //      - maximum + 1
 //      - count
 // autres suites/séquences, voir OEIS (Recaman)
+// variantes 
 
 pub struct Collatz {
     init_value: u128,
