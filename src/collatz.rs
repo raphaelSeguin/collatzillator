@@ -19,7 +19,6 @@ pub struct Collatz {
     maximum: u128,
     count_samples: u128, // pour contraindre une longueur de table ?
     count_repeats: u128,
-    next_value: u128,
     cursor: f32,
     increment: f32,
     pub altern_phase: bool,
@@ -34,7 +33,6 @@ impl Collatz {
             repeats: 1,
             count_samples: 0,
             count_repeats: 0,
-            next_value: 0,
             cursor: 0.0,
             increment: 1.0,
             altern_phase: true,
@@ -63,10 +61,11 @@ impl Collatz {
     }
     pub fn interpolate(&mut self) -> f32 {
         self.cursor += self.increment;
-        if self.cursor >= 1.0 {
+        while self.cursor >= 1.0 {
             self.next_value();
-            self.cursor %= 1.0;
+            self.cursor += -1.0
         }
+        // self.cursor %= 1.0;
         if self.altern_phase {
             ((self.value % u16::MAX as u128) as f32 / u16::MAX as f32) * (((self.count_repeats % 2) * 2) as f32 - 1.0)
         } else {
