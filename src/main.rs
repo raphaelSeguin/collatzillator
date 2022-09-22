@@ -14,8 +14,9 @@ use collatz::Collatz;
 
 // Utils
 // mtof ftom
-// params in audio file output
+// params in audio file output name
 // atodb dbtoa
+// ramp si plusieurs arguments
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -34,11 +35,13 @@ struct Args {
    pitch: f32,
    #[clap(short, long, value_parser, default_value_t = false)]
    altern_phase: bool,
+   #[clap(short, long, value_parser)]
+   list: Vec<f32>
 }
 
 fn main() -> Result<(), Error> {
     let args = Args::parse();
-
+    println!("{} {} {}", args.list[0], args.list[1], args.list[2]);
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     
     let mut collatz = Collatz::new(args.init);
