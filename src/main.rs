@@ -63,8 +63,8 @@ fn main() -> Result<(), Error> {
         let mut out_file = File::create(Path::new(&file_name))?;
         wav::write(header, &data, &mut out_file)?;
     } else {
-        let source = collatz.buffered().convert_samples().amplify(1.0);
-        let _result = stream_handle.play_raw(source);
+        // let source = collatz.buffered().convert_samples().amplify(1.0);
+        let _result = stream_handle.play_raw(collatz);
         // .speed(args.pitch)
         // .reverb(Duration::from_millis(100), 0.7)
         // .filter(1000)
