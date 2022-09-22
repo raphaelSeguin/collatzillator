@@ -13,6 +13,8 @@ use rodio::Source;
 
 pub struct Collatz {
     init_value: u128,
+    min_value: u128,
+    pub max_value: u128,
     value: u128,
     pub exploration_step: u128,
     pub repeats: u128,
@@ -22,11 +24,16 @@ pub struct Collatz {
     cursor: f32,
     increment: f32,
     pub altern_phase: bool,
+    pub looping: bool,
+    pub drift: u128,
 }
 impl Collatz {
     pub fn new(init_value: u128) -> Collatz {
         Collatz { 
             init_value,
+            min_value: init_value,
+            max_value: u128::max_value(),
+            looping: false,
             value: init_value,
             exploration_step: 1,
             maximum: 0,
@@ -36,10 +43,11 @@ impl Collatz {
             cursor: 0.0,
             increment: 1.0,
             altern_phase: true,
+            drift: 0,
         }
     }
-    pub fn set_pitch(&mut self, pitch: f32) {
-        self.increment = pitch;
+    pub fn set_octave(&mut self, octave: f32) {
+        self.increment = 2.0f32.powf(octave);
     }
     fn next_value(&mut self) {
         self.value = if self.value % 2 == 0 { 
@@ -50,10 +58,15 @@ impl Collatz {
                 if self.count_repeats == self.repeats {
                     self.count_repeats = 0;
                     self.init_value += self.exploration_step;
+                    if self.looping && self.init_value == self.max_value {
+                        self.min_value += self.drift;
+                        self.max_value += self.drift;
+                        self.init_value = self.min_value;
+                    }
                 }
                 self.init_value
             } else {
-                3 * self.value + 1 
+                3 * self.value + 1
             }
         };
         self.maximum = if self.value > self.maximum { self.value } else { self.maximum };
@@ -65,7 +78,6 @@ impl Collatz {
             self.next_value();
             self.cursor += -1.0
         }
-        // self.cursor %= 1.0;
         if self.altern_phase {
             ((self.value % u16::MAX as u128) as f32 / u16::MAX as f32) * (((self.count_repeats % 2) * 2) as f32 - 1.0)
         } else {
