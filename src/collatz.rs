@@ -26,6 +26,7 @@ pub struct Collatz {
     pub altern_phase: bool,
     pub looping: bool,
     pub drift: u128,
+    pub interpolation: bool,
 }
 impl Collatz {
     pub fn new(init_value: u128) -> Collatz {
@@ -44,27 +45,28 @@ impl Collatz {
             increment: 1.0,
             altern_phase: true,
             drift: 0,
+            interpolation: false,
         }
     }
     pub fn set_octave(&mut self, octave: f32) {
         self.increment = 2.0f32.powf(octave);
     }
     fn next_value(&mut self) {
-        self.value = if self.value % 2 == 0 { 
-            self.value / 2 
-        } else {
-            if self.value == 1 {
-                self.count_repeats += 1;
-                if self.count_repeats == self.repeats {
-                    self.count_repeats = 0;
-                    self.init_value += self.exploration_step;
-                    if self.looping && self.init_value == self.max_value {
-                        self.min_value += self.drift;
-                        self.max_value += self.drift;
-                        self.init_value = self.min_value;
-                    }
+        self.value = if self.value == 1 {
+            self.count_repeats += 1;
+            if self.count_repeats == self.repeats {
+                self.count_repeats = 0;
+                self.init_value += self.exploration_step;
+                if self.looping && self.init_value >= self.max_value {
+                    self.min_value += self.drift;
+                    self.max_value += self.drift;
+                    self.init_value = self.min_value;
                 }
-                self.init_value
+            }
+            self.init_value
+        } else {
+            if self.value % 2 == 0 { 
+                self.value / 2 
             } else {
                 3 * self.value + 1
             }

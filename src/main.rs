@@ -64,7 +64,7 @@ fn main() -> Result<(), Error> {
 
     if args.file.len() > 0 {
         let mut audio: Vec<f32> = Vec::new();
-        for _n in 0..(args.duration as f32* 44.1) as usize {
+        for _n in 0..(args.duration as f32 * 44.1) as usize {
             audio.push(collatz.next().unwrap())
         }
         let header = wav::Header::new(
